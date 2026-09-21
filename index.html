@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tesis Güvenlik Altyapı Keşif Formu</title>
+	<style>
+		:root { --ink: #111; --muted: #666; --line: #bdbdbd; --accent: #111; --soft: #f2f2f2; }
+		* { box-sizing: border-box; }
+		body { margin: 0; color: var(--ink); background: #fff; font: 15px/1.5 Arial, sans-serif; }
+		main { max-width: 1080px; margin: 32px auto; padding: 0 18px 48px; }
+		.hero { background: #111; color: #fff; padding: 34px; border-radius: 2px; margin-bottom: 22px; }
+		.hero h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 42px); }
+		.hero p { margin: 0; color: #ddd; }
+		section { background: #fff; border: 1px solid var(--line); border-radius: 2px; padding: 24px; margin: 16px 0; }
+		h2 { margin: 0 0 20px; font-size: 21px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+		h3 { margin: 24px 0 12px; font-size: 16px; }
+		.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+		label { display: grid; gap: 6px; font-weight: 700; }
+		input, textarea, select { width: 100%; border: 1px solid #999; border-radius: 2px; padding: 10px 11px; color: var(--ink); background: #fff; font: inherit; }
+		textarea { min-height: 110px; resize: vertical; }
+		.choices { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 8px; }
+		.choices label { display: flex; align-items: center; gap: 7px; font-weight: 400; }
+		.choices input { width: auto; }
+		.table-wrap { overflow-x: auto; }
+		table { width: 100%; border-collapse: collapse; min-width: 620px; }
+		th, td { border: 1px solid var(--line); padding: 8px; text-align: left; }
+		th { background: var(--soft); font-size: 13px; }
+		td input { border: 0; padding: 6px; }
+		.remove { border: 1px solid #999; background: #fff; color: #111; border-radius: 2px; padding: 7px 9px; cursor: pointer; }
+		.actions { display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; margin-top: 22px; }
+		button { border: 1px solid #111; border-radius: 2px; padding: 12px 18px; cursor: pointer; font: inherit; font-weight: 700; }
+		.add { background: #fff; color: var(--ink); margin-top: 10px; }
+		.primary { background: #111; color: #fff; }
+		@media (max-width: 680px) { main { margin-top: 14px; } .hero, section { padding: 18px; } .grid { grid-template-columns: 1fr; } }
+	</style>
+</head>
+<body>
+<main>
+	<header class="hero">
+		<h1>Tesis Güvenlik Altyapı Keşif Formu</h1>
+		<p>PDF formunun dijital veri giriş ekranı</p>
+	</header>
+
+	<form id="kesifForm">
+		<section>
+			<h2>1. Genel Bilgiler</h2>
+			<div class="grid">
+				<label>Keşif Tarihi<input type="date" name="kesifTarihi" required></label>
+				<label>Tesis Adı<input type="text" name="tesisAdi" required></label>
+				<label>Keşfi Yapan<input type="text" name="kesfiYapan"></label>
+				<label>Tesis Yetkilisi Adı Soyadı<input type="text" name="tesisYetkilisi"></label>
+				<label>Tesis Yetkilisi Telefon<input type="tel" name="yetkiliTelefon"></label>
+				<label>Tesis Yetkilisi E-Posta<input type="email" name="yetkiliEposta"></label>
+			</div>
+		</section>
+
+		<section>
+			<h2>2. Video İzleme Sistemi Altyapısı</h2>
+			<div class="grid">
+				<label>Toplam Kamera Sayısı<input type="number" min="0" name="toplamKameraSayisi"></label>
+			</div>
+			<h3>Marka - Model Bilgileri</h3>
+			<div class="table-wrap"><table id="kameraTable"><thead><tr><th>Adet</th><th>Marka</th><th>Model</th><th>Çözünürlük</th><th></th></tr></thead><tbody></tbody></table></div>
+			<button type="button" class="add" data-table="kameraTable">+ Kamera satırı ekle</button>
+			<h3>Kayıt Cihazları</h3>
+			<div class="grid">
+				<label>NVR Marka / Model / Adet<input type="text" name="nvr"></label>
+				<label>DVR, XVR Marka / Model / Adet<input type="text" name="dvrXvr"></label>
+				<label>Toplam Kanal Kapasitesi, Doluluk Oranı<input type="text" name="kanalKapasitesi"></label>
+				<label>Depolama Kapasitesi<input type="text" name="depolamaKapasitesi"></label>
+				<label>Depolama RAID Yapılandırması Tipi<input type="text" name="raidTipi"></label>
+				<label>Mevcut Kullanılan VMS Yazılımı<input type="text" name="vmsYazilimi"></label>
+			</div>
+			<h3>İş İstasyonları</h3>
+			<div class="table-wrap"><table id="isIstasyonuTable"><thead><tr><th>Adet</th><th>Sistem Üreticisi</th><th>CPU</th><th>GPU</th><th>RAM</th><th></th></tr></thead><tbody></tbody></table></div>
+			<button type="button" class="add" data-table="isIstasyonuTable">+ İş istasyonu satırı ekle</button>
+		</section>
+
+		<section><h2>3. Ağ Altyapısı</h2><div class="grid">
+			<label>Yönetilebilir Switch Adedi / Marka Bilgisi<input type="text" name="yonetilebilirSwitch"></label>
+			<label>Yönetilemez Switch Adedi / Marka Bilgisi<input type="text" name="yonetilemezSwitch"></label>
+			<label>Kullanımda Olmayan Merkezi Port Sayısı<input type="number" min="0" name="bosPortSayisi"></label>
+		</div><label style="margin-top:16px">Kablolama Altyapısı<div class="choices"><label><input type="checkbox" name="kablolama" value="Cat6"> Cat6</label><label><input type="checkbox" name="kablolama" value="Fiber Optik"> Fiber Optik</label><label><input type="checkbox" name="kablolama" value="Koaksiyel"> Koaksiyel</label></div></label></section>
+
+		<section><h2>4. Yangın Algılama ve Alarm Sistemi</h2><div class="grid">
+			<label>Yangın Alarm Paneli Markası / Modeli<input type="text" name="yanginPaneli"></label>
+			<label>Panel Sistem Tipi<div class="choices"><label><input type="radio" name="panelSistemTipi" value="Konvansiyonel Sistem"> Konvansiyonel</label><label><input type="radio" name="panelSistemTipi" value="Adresli Sistem"> Adresli</label></div></label>
+			<label>Optik Duman Dedektörü Adedi<input type="number" min="0" name="dumanDedektoru"></label><label>Isı Dedektörü Adedi<input type="number" min="0" name="isiDedektoru"></label>
+			<label>Yangın İhbar Butonu Adedi<input type="number" min="0" name="ihbarButonu"></label><label>Siren / Aktif Uyarıcı Adedi<input type="number" min="0" name="siren"></label>
+		</div><label style="margin-top:16px">Entegrasyon Durumu<textarea name="yanginEntegrasyon" placeholder="Panelin röle çıkışı veya IP modülü var mı? VMS veya diğer sistemlerle haberleşebilir mi?"></textarea></label></section>
+
+		<section><h2>5. Geçiş Kontrol Sistemi</h2><div class="grid">
+			<label>Kullanılan Sistemin Üreticisi / Markası<input type="text" name="gecisMarkasi"></label><label>Kartlı Geçiş Okuyucu Adedi / Türü<input type="text" name="kartliOkuyucu"></label><label>Biyometrik Okuyucu Adedi / Türü<input type="text" name="biyometrikOkuyucu"></label><label>Toplam Turnike / Geçiş Noktası Adedi<input type="number" min="0" name="gecisNoktasi"></label>
+		</div><label style="margin-top:16px">Entegrasyon Durumu<textarea name="gecisEntegrasyon" placeholder="Kontrol panelleri IP tabanlı mı? Hangi yazılım kullanılıyor?"></textarea></label></section>
+
+		<section><h2>6. Asansör Sistemi</h2><div class="grid"><label>Asansör Markası / Modeli<input type="text" name="asansorMarkasi"></label><label>Asansör Sayısı<input type="number" min="0" name="asansorSayisi"></label></div><label style="margin-top:16px">Asansör Teknolojisi<div class="choices"><label><input type="radio" name="asansorTeknolojisi" value="Eski Nesil"> Eski Nesil</label><label><input type="radio" name="asansorTeknolojisi" value="Yeni Nesil"> Yeni Nesil</label></div></label><div class="grid" style="margin-top:16px"><label>Asansör Kabini İçerisinde Kamera<div class="choices"><label><input type="radio" name="asansorKamera" value="Var"> Var</label><label><input type="radio" name="asansorKamera" value="Yok"> Yok</label></div></label><label>Asansör Kabini İçerisinde Acil Diyafon<div class="choices"><label><input type="radio" name="acilDiyafon" value="Var"> Var</label><label><input type="radio" name="acilDiyafon" value="Yok"> Yok</label></div></label></div></section>
+
+		<section><h2>7. Kesintisiz Güç Altyapısı</h2><div class="grid"><label>UPS Markası / Modeli<input type="text" name="upsMarkasi"></label><label>UPS Kapasitesi<input type="text" name="upsKapasitesi" placeholder="kVA veya kW"></label><label>Akü Bilgisi / Tahmini Çalışma Süresi<input type="text" name="akuBilgisi"></label></div></section>
+
+		<section><h2>8. İnternet Altyapısı</h2><div class="grid"><label>İnternet Servis Sağlayıcısı<input type="text" name="internetSaglayicisi"></label><label>İndirme Hız Değeri (Mbps)<input type="number" min="0" name="download"></label><label>Yükleme Hız Değeri (Mbps)<input type="number" min="0" name="upload"></label><label>Statik IP Hizmeti<div class="choices"><label><input type="radio" name="statikIp" value="Var"> Var</label><label><input type="radio" name="statikIp" value="Yok"> Yok</label></div></label></div></section>
+
+		<section><h2>9. Ek Bilgiler ve Keşfi Yapanın Notları</h2><textarea name="ekBilgiler" rows="10"></textarea></section>
+		<div class="actions"><button type="reset">Formu temizle</button><button type="submit" class="primary">JSON oluştur ve sonucu aç</button></div>
+	</form>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
