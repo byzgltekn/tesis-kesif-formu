@@ -37,6 +37,12 @@ function value(form, name) {
     return form.elements[name]?.value || "";
 }
 
+function formatDate(value) {
+    const dateParts = value.includes("/") ? value.split("/") : value.split("-").reverse();
+    const [day, month, year] = dateParts;
+    return day && month && year ? `${day}/${month}/${year}` : "";
+}
+
 function checkedValues(form, name) {
     return [...form.querySelectorAll(`input[name="${name}"]:checked`)].map((input) => input.value);
 }
@@ -46,7 +52,7 @@ function jsonOlustur(event) {
     const form = event.currentTarget;
     const veri = {
         genelBilgiler: {
-            kesifTarihi: value(form, "kesifTarihi"),
+            kesifTarihi: formatDate(value(form, "kesifTarihi")),
             tesisAdi: value(form, "tesisAdi"),
             kesfiYapan: value(form, "kesfiYapan"),
             tesisYetkilisi: value(form, "tesisYetkilisi"),
