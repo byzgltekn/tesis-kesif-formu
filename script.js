@@ -38,9 +38,60 @@ function value(form, name) {
 }
 
 function formatDate(value) {
-    const dateParts = value.includes("/") ? value.split("/") : value.split("-").reverse();
+    const dateParts = value.includes("-") ? value.split("-").reverse() : value.split(/[./]/);
     const [day, month, year] = dateParts;
     return day && month && year ? `${day}/${month}/${year}` : "";
+}
+
+function formatDateInput(event) {
+    const input = event.currentTarget;
+    const digits = input.value.replace(/\D/g, "").slice(0, 8);
+    const parts = [];
+
+    if (digits.length > 0) parts.push(digits.slice(0, 2));
+    if (digits.length > 2) parts.push(digits.slice(2, 4));
+    if (digits.length > 4) parts.push(digits.slice(4, 8));
+
+    input.value = parts.join(".");
+    validateDateInput(input);
+}
+
+function validateDateInput(input) {
+    const match = input.value.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (!match) {
+        input.setCustomValidity("");
+        return;
+    }
+
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    const isValid = month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth;
+
+    input.setCustomValidity(isValid ? "" : "Geçerli bir gün ve ay girin.");
+}
+
+function moveToNextField(event) {
+    if (event.key !== "Enter") return;
+
+    const form = event.currentTarget;
+    const fields = [...form.querySelectorAll("input, select, textarea")].filter(
+        (field) => !field.disabled && field.type !== "hidden"
+    );
+    const currentIndex = fields.indexOf(event.target);
+
+    if (currentIndex === -1) return;
+
+    event.preventDefault();
+    const nextField = fields[currentIndex + 1];
+
+    if (nextField) {
+        nextField.focus();
+        return;
+    }
+
+    form.requestSubmit();
 }
 
 function checkedValues(form, name) {
@@ -50,6 +101,12 @@ function checkedValues(form, name) {
 function jsonOlustur(event) {
     event.preventDefault();
     const form = event.currentTarget;
+    const dateInput = form.elements.kesifTarihi;
+    validateDateInput(dateInput);
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
     const veri = {
         genelBilgiler: {
             kesifTarihi: formatDate(value(form, "kesifTarihi")),
@@ -114,6 +171,8 @@ document.querySelectorAll(".add").forEach((button) => {
 const kesifForm = document.getElementById("kesifForm");
 if (kesifForm) {
     kesifForm.addEventListener("submit", jsonOlustur);
+    kesifForm.addEventListener("keydown", moveToNextField);
+    kesifForm.elements.kesifTarihi?.addEventListener("input", formatDateInput);
     addTableRow("kameraTable");
     addTableRow("isIstasyonuTable");
 }
